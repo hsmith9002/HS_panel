@@ -83,17 +83,33 @@ write.table(filesFull, file = paste(dirs, "filesFull", "List.txt", sep = ""), ro
 ```
 ## Acbc
 stringtie --merge -m 0 -T 0 -F 0 -p 8 -G ~/Saba_Lab/RNA-Seq/HRDP/Transcript_Reconstruction/index/Rattus_norvegicus.Rnor_6.0.90.cleaned.gtf -o ~/Saba_Lab/RNA-Seq/HS/stringtie/mergedgtfs/stringtie_results_Acbc.gtf ~/Saba_Lab/RNA-Seq/HS/stringtie/fileLists/AcbcList.txt
+
+/usr/local/gffcompare.0.10.1/gffcompare -G -r ~/Saba_Lab/RNA-Seq/HRDP/Transcript_Reconstruction/index/Rattus_norvegicus.Rnor_6.0.90.cleaned.gtf ~/Saba_Lab/RNA-Seq/HS/stringtie/mergedgtfs/stringtie_results_Acbc.gtf
+
 ## IL
 stringtie --merge -m 0 -T 0 -F 0 -p 8 -G ~/Saba_Lab/RNA-Seq/HRDP/Transcript_Reconstruction/index/Rattus_norvegicus.Rnor_6.0.90.cleaned.gtf -o ~/Saba_Lab/RNA-Seq/HS/stringtie/mergedgtfs/stringtie_results_IL.gtf ~/Saba_Lab/RNA-Seq/HS/stringtie/fileLists/ILList.txt
+
+/usr/local/gffcompare.0.10.1/gffcompare -G -r ~/Saba_Lab/RNA-Seq/HRDP/Transcript_Reconstruction/index/Rattus_norvegicus.Rnor_6.0.90.cleaned.gtf ~/Saba_Lab/RNA-Seq/HS/stringtie/mergedgtfs/stringtie_results_IL.gtf
+
 ## LHB
 stringtie --merge -m 0 -T 0 -F 0 -p 8 -G ~/Saba_Lab/RNA-Seq/HRDP/Transcript_Reconstruction/index/Rattus_norvegicus.Rnor_6.0.90.cleaned.gtf -o ~/Saba_Lab/RNA-Seq/HS/stringtie/mergedgtfs/stringtie_results_LHB.gtf ~/Saba_Lab/RNA-Seq/HS/stringtie/fileLists/LHBList.txt
+
+/usr/local/gffcompare.0.10.1/gffcompare -G -r ~/Saba_Lab/RNA-Seq/HRDP/Transcript_Reconstruction/index/Rattus_norvegicus.Rnor_6.0.90.cleaned.gtf ~/Saba_Lab/RNA-Seq/HS/stringtie/mergedgtfs/stringtie_results_LHB.gtf
+
 ## PL
 stringtie --merge -m 0 -T 0 -F 0 -p 8 -G ~/Saba_Lab/RNA-Seq/HRDP/Transcript_Reconstruction/index/Rattus_norvegicus.Rnor_6.0.90.cleaned.gtf -o ~/Saba_Lab/RNA-Seq/HS/stringtie/mergedgtfs/stringtie_results_PL.gtf ~/Saba_Lab/RNA-Seq/HS/stringtie/fileLists/PLList.txt
+
+/usr/local/gffcompare.0.10.1/gffcompare -G -r ~/Saba_Lab/RNA-Seq/HRDP/Transcript_Reconstruction/index/Rattus_norvegicus.Rnor_6.0.90.cleaned.gtf ~/Saba_Lab/RNA-Seq/HS/stringtie/mergedgtfs/stringtie_results_PL.gtf
+
 ## VoLo
 stringtie --merge -m 0 -T 0 -F 0 -p 8 -G ~/Saba_Lab/RNA-Seq/HRDP/Transcript_Reconstruction/index/Rattus_norvegicus.Rnor_6.0.90.cleaned.gtf -o ~/Saba_Lab/RNA-Seq/HS/stringtie/mergedgtfs/stringtie_results_VoLo.gtf ~/Saba_Lab/RNA-Seq/HS/stringtie/fileLists/VoLoList.txt
 
+/usr/local/gffcompare.0.10.1/gffcompare -G -r ~/Saba_Lab/RNA-Seq/HRDP/Transcript_Reconstruction/index/Rattus_norvegicus.Rnor_6.0.90.cleaned.gtf ~/Saba_Lab/RNA-Seq/HS/stringtie/mergedgtfs/stringtie_results_VoLo.gtf
+
 ## FULL
 stringtie --merge -m 0 -T 0 -F 0 -p 8 -G ~/Saba_Lab/RNA-Seq/HRDP/Transcript_Reconstruction/index/Rattus_norvegicus.Rnor_6.0.90.cleaned.gtf -o ~/Saba_Lab/RNA-Seq/HS/stringtie/mergedgtfs/stringtie_results_FULL.gtf ~/Saba_Lab/RNA-Seq/HS/stringtie/fileLists/filesFullList.txt
+
+/usr/local/gffcompare.0.10.1/gffcompare -G -r ~/Saba_Lab/RNA-Seq/HRDP/Transcript_Reconstruction/index/Rattus_norvegicus.Rnor_6.0.90.cleaned.gtf ~/Saba_Lab/RNA-Seq/HS/stringtie/mergedgtfs/stringtie_results_FULL.gtf
 ```
 
 
