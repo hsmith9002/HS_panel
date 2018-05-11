@@ -80,9 +80,16 @@ ccs <- function(x){
 
 classcodesum <- as.data.frame(do.call("rbind", lapply(dflist2, FUN = function(x) ccs(x))))
 classcodesum$Dataset <- rownames(classcodesum)
+classcodesum$Dataset <- factor(classcodesum$Dataset, levels = c("Acbc", "IL", "LHB",  "PL", "VoLo", "FULL"))
+classcodesum$Dataset <- relevel(classcodesum$Dataset, 'FULL')
 cc.melt <- melt(classcodesum, id.vars = "Dataset")
 
 ggplot(cc.melt, aes(Dataset, value)) +   
   geom_bar(aes(fill = variable), stat = 'identity', position = 'dodge') +
-  labs(x = "Dataset (Brain region)", y = "Count")
+  labs(x = "Dataset (Brain region)", y = "Count") +
+  scale_fill_manual(values = brewer.pal(n = 9, name = "Set3"),
+                    name="Class code",
+                       breaks=c("e", "i", "j", "o", "p", "s", "u", "x", "y"),
+                       labels=c("e", "i", "j", "o", "p", "s", "u", "x", "y")) + 
+  ggtitle("Summary of class codes for \n novel transcripts") 
 ```
