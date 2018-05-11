@@ -153,3 +153,39 @@ save(Acbc_df, IL_df, LHB_df, PL_df, VoLo_df, FULL_df, file = paste("/Volumes/smi
 
 ```
 
+Generate transcript only (remove exon rows) data, and merge with .tmap file 
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+## Set directory where .tmap files can be found
+dirs2 <- "/Volumes/smiharry/Saba_Lab/RNA-Seq/HS/stringtie/mergedgtfs/"
+
+## Set each file name object
+Acbc.t <- "gffcmp.stringtie_results_Acbc.gtf"
+IL.t <- "gffcmp.stringtie_results_IL.gtf"
+LHB.t <- "gffcmp.stringtie_results_LHB.gtf"
+PL.t <- "gffcmp.stringtie_results_PL.gtf"
+VoLo.t <- "gffcmp.stringtie_results_VoLo.gtf"
+FULL.t <- "gffcmp.stringtie_results_FULL.gtf"
+
+Acbc.tmap <- read.table(file = paste(dirs2, Acbc.t, ".tmap", sep = ""), header = TRUE)
+IL.tmap <- read.table(file = paste(dirs2, IL.t, ".tmap", sep = ""), header = TRUE)
+LHB.tmap <- read.table(file = paste(dirs2, LHB.t, ".tmap", sep = ""), header = TRUE)
+PL.tmap <- read.table(file = paste(dirs2, PL.t, ".tmap", sep = ""), header = TRUE)
+VoLo.tmap <- read.table(file = paste(dirs2, VoLo.t, ".tmap", sep = ""), header = TRUE)
+FULL.tmap <- read.table(file = paste(dirs2, FULL.t, ".tmap", sep = ""), header = TRUE)
+
+## Remove exon rows from gtf datasets
+sm <- function(data, tmap){
+  a.tmp <- data[!duplicated(data$transcript_id), ]
+  a.tlev <- merge(a.tmp, tmap, by.x = "transcript_id", by.y = "qry_id")
+}
+
+Acbc.tlev <- sm(Acbc_df, Acbc.tmap)
+IL.tlev <- sm(IL_df, IL.tmap)
+LHB.tlev <- sm(LHB_df, LHB.tmap)
+PL.tlev <- sm(PL_df, PL.tmap)
+VoLo.tlev <- sm(VoLo_df, VoLo.tmap)
+FULL.tlev <- sm(FULL_df, FULL.tmap)
+
+save(Acbc.tlev, IL.tlev, LHB.tlev, PL.tlev, VoLo.tlev, FULL.tlev, file = paste("/Volumes/smiharry/Saba_Lab/RNA-Seq/HS/", "quantitation/", "HS.gtf.tmap.merge.RData", sep = ""))
+```
