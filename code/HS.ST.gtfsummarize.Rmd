@@ -1,0 +1,65 @@
+---
+title: "HS.ST.gtfsummarize"
+author: "Harry Smith"
+date: "5/11/2018"
+output: html_document
+---
+
+This program reads in the gtf dataframes built in "HS.ST.prepandmerge.Rmd", and uses them to create a number of summary statistics and corresponding graphics.
+1. number of transcripts/genes within each brain region transcriptome
+2. number of novel transcripts within each brain region transcriptome
+3. of the novel transcripts, how many are single exon and how many are multi exon
+4. What gffcompare classcode is associated with each novel transcript
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+## set up workspace
+rm(list=ls())
+options(stringsAsFactors = FALSE)
+## load datasets
+load(file = paste("/Volumes/smiharry/Saba_Lab/RNA-Seq/HS/", "quantitation/", "HS.gtfdataframes.RData", sep = ""))
+dflist <- list("Acbc" = Acbc_df, "IL" = IL_df, "LHB" = LHB_df, "PL" = PL_df, "VoLo" = VoLo_df, "FULL" = FULL_df)
+ss <- function(data) {
+  ## number of transcripts
+  tcnt <- sum(!duplicated(data$transcript_id))
+  ## number of genes
+  gcnt <- sum(!duplicated(data$gene_id))
+  ## number of novel transcripts
+  nt <- data[grepl("MSTRG", data$transcript_id), ]
+  ntcnt <- sum(!duplicated(nt$transcript_id))
+  
+  ## generate table of transcrpt IDs and their number of exons for novel transcript dataset
+  nt$exon_number2 <- ifelse(is.na(nt$exon_number), 0, 1)
+  nexcntdf <- aggregate(exon_number2~transcript_id, data = nt, function(x) sum(x))
+  singleexcnt <- sum(nexcntdf$exon_number2 == 1)
+  multiexcnt <- sum(nexcntdf$exon_number2 > 1)
+  
+  ## results vector
+  out <- c(tcnt, ntcnt, multiexcnt, singleexcnt, gcnt)
+  return(out)
+}
+forPlot <- as.data.frame(do.call("rbind", lapply(dflist, FUN = function(x) ss(x))))
+forPlot$dataset <- rownames(forPlot)
+forPlot$dataset <- factor(forPlot$dataset, levels = c("Acbc", "IL", "LHB",  "PL", "VoLo", "FULL"))
+forPlot$dataset <- relevel(forPlot$dataset, 'FULL')
+colnames(forPlot) <- c("Number of transcripts", "Number of novel transcripts", "Number of novel transcripts with multiple exons", "Number of novel transcripts with one exon", "Number of genes", "Dataset")
+
+
+```
+
+Generate plots
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+library(ggplot2)
+library(reshape2)
+library(RColorBrewer)
+fp.melt <- melt(forPlot, id.vars = "Dataset")
+png("/Volumes/smiharry/Saba_Lab/RNA-Seq/HS/graphics/HS.gtfTranscriptSummary.png", height = 6, width = 8, res = 480, units = "in")
+ggplot(fp.melt, aes(Dataset, value)) +   
+  geom_bar(aes(fill = variable), stat = 'identity', position = 'dodge') +
+  labs(x = "Dataset (Brain region)", y = "Count") +
+  scale_fill_manual(values=c("black", "darkorchid2", "dodgerblue3", "green4", "darkgoldenrod2"), 
+                    name=NULL,
+                       breaks=c("Number of transcripts", "Number of novel transcripts", "Number of novel transcripts with multiple exons", "Number of novel transcripts with one exon", "Number of genes"),
+                       labels=c("Number of transcripts\n", "Number of novel transcripts\n", "Number of novel transcripts \nwith multiple exons\n", "Number of novel transcripts \nwith one exon\n", "Number of genes\n")) + ggtitle("Summary of transcript content \n by brain region")
+dev.off()
+```
