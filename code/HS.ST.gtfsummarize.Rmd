@@ -63,3 +63,26 @@ ggplot(fp.melt, aes(Dataset, value)) +
                        labels=c("Number of transcripts\n", "Number of novel transcripts\n", "Number of novel transcripts \nwith multiple exons\n", "Number of novel transcripts \nwith one exon\n", "Number of genes\n")) + ggtitle("Summary of transcript content \n by brain region")
 dev.off()
 ```
+
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+## load gtf.tmap data
+load(file = paste("/Volumes/smiharry/Saba_Lab/RNA-Seq/HS/", "quantitation/", "HS.gtf.tmap.merge.RData", sep = ""))
+dflist2 <- list("Acbc" = Acbc.tlev, "IL" = IL.tlev, "LHB" = LHB.tlev, "PL" = PL.tlev, "VoLo" = VoLo.tlev, "FULL" = FULL.tlev)
+## extract novel transcripts, and summarize class codes
+ccs <- function(x){
+  nt <- x[grepl("MSTRG", x$transcript_id), ]
+  print(dim(nt)[1])
+  out <- table(nt$class_code.x)
+  return(out)
+}
+
+classcodesum <- as.data.frame(do.call("rbind", lapply(dflist2, FUN = function(x) ccs(x))))
+classcodesum$Dataset <- rownames(classcodesum)
+cc.melt <- melt(classcodesum, id.vars = "Dataset")
+
+ggplot(cc.melt, aes(Dataset, value)) +   
+  geom_bar(aes(fill = variable), stat = 'identity', position = 'dodge') +
+  labs(x = "Dataset (Brain region)", y = "Count")
+```
