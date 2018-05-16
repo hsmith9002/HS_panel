@@ -151,7 +151,55 @@ FULL.gtf <- import(paste(directory, FULL, sep = "")) #This imports the .gtf file
 FULL_df <- as.data.frame(FULL.gtf) #Converts the object above to a dataframe 
 save(Acbc_df, IL_df, LHB_df, PL_df, VoLo_df, FULL_df, file = paste("/Volumes/smiharry/Saba_Lab/RNA-Seq/HS/", "quantitation/", "HS.gtfdataframes.RData", sep = ""))
 
+## remove ensembl transcripts from IL, PL, and LHB gtfs and write back out to gtf format for gffcompare
+IL.out <- "gffcmp.annotated_IL_MSTRG.gtf"
+PL.out <- "gffcmp.annotated_PL_MSTRG.gtf"
+LHB.out <- "gffcmp.annotated_LHB_MSTRG.gtf"
+
+IL_df.ss <- IL_df[grep("MSTRG", IL_df$transcript_id), ]
+table(substr(IL_df.ss$transcript_id, start = 1, stop = 5)) # should only be MSTRG
+export(IL_df.ss, paste(directory, IL.out, sep = ""))
+
+PL_df.ss <- PL_df[grep("MSTRG", PL_df$transcript_id), ]
+table(substr(PL_df.ss$transcript_id, start = 1, stop = 5)) # should only be MSTRG
+export(PL_df.ss, paste(directory, PL.out, sep = ""))
+
+LHB_df.ss <- LHB_df[grep("MSTRG", LHB_df$transcript_id), ]
+table(substr(LHB_df.ss$transcript_id, start = 1, stop = 5)) # should only be MSTRG
+export(LHB_df.ss, paste(directory, LHB.out, sep = ""))
+
 ```
+
+##use gffcompare to create comparison gtfs for the following comparisons
+1. IL vs. PL
+2. IL vs. LHB
+
+```
+/usr/local/gffcompare.0.10.1/gffcompare -r ~/Saba_Lab/RNA-Seq/HS/stringtie/mergedgtfs/gffcmp.annotated_IL_MSTRG.gtf ~/Saba_Lab/RNA-Seq/HS/stringtie/mergedgtfs/gffcmp.annotated_PL_MSTRG.gtf
+
+/usr/local/gffcompare.0.10.1/gffcompare -r ~/Saba_Lab/RNA-Seq/HS/stringtie/mergedgtfs/gffcmp.annotated_IL_MSTRG.gtf ~/Saba_Lab/RNA-Seq/HS/stringtie/mergedgtfs/gffcmp.annotated_LHB_MSTRG.gtf
+```
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+## Set directory
+directory <- "/Volumes/smiharry/Saba_Lab/RNA-Seq/HS/stringtie/mergedgtfs/"
+## Set each file name object
+ILvPL <- "gffcmp.annotated_ILvPL_MSTRG.gtf"
+ILvLHB <- "gffcmp.annotated_ILvLHB_MSTRG.gtf"
+
+
+options(stringsAsFactors = FALSE)
+library(rtracklayer) 
+library(GenomicRanges)
+
+ILvPL.gtf <- import(paste(directory, ILvPL, sep = "")) #This imports the .gtf file and formats the information in the file and the 9th column to something more    readible
+ILvPL_df <- as.data.frame(ILvPL.gtf) #Converts the object above to a dataframe 
+
+ILvLHB.gtf <- import(paste(directory, ILvLHB, sep = "")) #This imports the .gtf file and formats the information in the file and the 9th column to something more    readible
+ILvLHB_df <- as.data.frame(ILvLHB.gtf) #Converts the object above to a dataframe 
+save(ILvPL_df, ILvLHB_df, file = paste("/Volumes/smiharry/Saba_Lab/RNA-Seq/HS/", "quantitation/", "HS.brainregiongtfcomparison.RData", sep = ""))
+```
+
 
 Generate transcript only (remove exon rows) data, and merge with .tmap file 
 
