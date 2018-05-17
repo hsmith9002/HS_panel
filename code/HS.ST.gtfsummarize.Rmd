@@ -223,4 +223,16 @@ ggplot(ccc.melt, aes(Dataset, value)) +
   ggtitle("Class code summary after gffcompare where\n IL is the reference group") 
 dev.off()
 
+## Generate plot summarizing class codes with collapsed category
+brewvec <- c("#80B1D3", "#8DD3C7", "#FFFFB3", "#BEBADA", "#FB8072")
+png("/Volumes/smiharry/Saba_Lab/RNA-Seq/HS/graphics/HS.brainregeiongtfcompareCollapsed.png", height = 6, width = 8, res = 480, units = "in")
+ggplot(cca.melt, aes(Dataset, value)) +   
+  geom_bar(aes(fill = variable), stat = 'identity', position = 'dodge') +
+  labs(x = "Dataset (Brain region)", y = "Count") +
+  scale_fill_manual(values = brewvec,
+                    name="Class code",
+                       breaks=c("X.", "j", "u", "i", "other"),
+                       labels=c("Complete match\n", "At least 1\n exon junction match\n", "Intergenic\n", "Intronic\n", "Ambiguous overlap\n")) + 
+  ggtitle("Summary of class codes for \n novel transcripts ") 
+dev.off()
 ```
