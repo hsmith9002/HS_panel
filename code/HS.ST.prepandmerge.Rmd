@@ -149,7 +149,7 @@ VoLo_df <- as.data.frame(VoLo.gtf) #Converts the object above to a dataframe
 
 FULL.gtf <- import(paste(directory, FULL, sep = "")) #This imports the .gtf file and formats the information in the file and the 9th column to something more    readible
 FULL_df <- as.data.frame(FULL.gtf) #Converts the object above to a dataframe 
-save(Acbc_df, IL_df, LHB_df, PL_df, VoLo_df, FULL_df, file = paste("/Volumes/smiharry/Saba_Lab/RNA-Seq/HS/", "quantitation/", "HS.gtfdataframes.RData", sep = ""))
+save(Acbc_df, IL_df, LHB_df, PL_df, VoLo_df, FULL_df, file = paste("/Volumes/smiharry/Saba_Lab/RNA-Seq/HS/Brain/", "quantitation/", "HS.gtfdataframes.RData", sep = ""))
 
 ## remove ensembl transcripts from IL, PL, and LHB gtfs and write back out to gtf format for gffcompare
 IL.out <- "gffcmp.annotated_IL_MSTRG.gtf"
@@ -197,7 +197,7 @@ ILvPL_df <- as.data.frame(ILvPL.gtf) #Converts the object above to a dataframe
 
 ILvLHB.gtf <- import(paste(directory, ILvLHB, sep = "")) #This imports the .gtf file and formats the information in the file and the 9th column to something more    readible
 ILvLHB_df <- as.data.frame(ILvLHB.gtf) #Converts the object above to a dataframe 
-save(ILvPL_df, ILvLHB_df, file = paste("/Volumes/smiharry/Saba_Lab/RNA-Seq/HS/", "quantitation/", "HS.brainregiongtfcomparison.RData", sep = ""))
+save(ILvPL_df, ILvLHB_df, file = paste("/Volumes/smiharry/Saba_Lab/RNA-Seq/HS/Brain/", "quantitation/", "HS.brainregiongtfcomparison.RData", sep = ""))
 ```
 
 
@@ -235,5 +235,5 @@ PL.tlev <- sm(PL_df, PL.tmap)
 VoLo.tlev <- sm(VoLo_df, VoLo.tmap)
 FULL.tlev <- sm(FULL_df, FULL.tmap)
 
-save(Acbc.tlev, IL.tlev, LHB.tlev, PL.tlev, VoLo.tlev, FULL.tlev, file = paste("/Volumes/smiharry/Saba_Lab/RNA-Seq/HS/", "quantitation/", "HS.gtf.tmap.merge.RData", sep = ""))
+save(Acbc.tlev, IL.tlev, LHB.tlev, PL.tlev, VoLo.tlev, FULL.tlev, file = paste("/Volumes/smiharry/Saba_Lab/RNA-Seq/HS/Brain/", "quantitation/", "HS.gtf.tmap.merge.RData", sep = ""))
 ```

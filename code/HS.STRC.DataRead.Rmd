@@ -1,0 +1,32 @@
+---
+title: "HS.STRC.DataRead"
+author: "Harry Smith"
+date: "5/23/2018"
+output: html_document
+---
+
+This program reads in the gene level and transcript level counts from the RSEM calls (for combined brains regions), and performs any necessary formatting. This should be simple formatting like making changes to col names.  It also removes outlier samples based on the results of "TC_SampleLevel_Dendrogram_BeforeFiltering.pdf" It then saves these datasets as .RData files to be called by ther programs downstream.
+
+File input: /data/rn6/quantitation/HS_brainPolyA/batch#/reconst.Full/
+File ouput: ~/Saba_Lab/RNA-Seq/HS/quantitation/
+
+1. Read in expected count data from all 10 Liver batches, append the batch number to each strain name based on the batch it came from, and merge based on transcript ID. 
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+## Read in RSEM data by batch number
+library(stcr)
+
+## Create global directory objects 
+dir <- "/Volumes/smiharry/Saba_Lab/RNA-Seq/HS/"
+dirs2 <- "/Volumes/rn6/quantitation/HS_brainPolyA/"
+dirlocal <- "~/Desktop/Saba_Lab/"
+location <- "reconst.Full"
+N <- list(1, 2, "_3_4_5")
+tissue <- "Brain"
+qtype <- "counts"
+filename <- "cnts.merged"
+
+## Read in data
+rsem.read.iso(dir, dirs2, tissue, N, qtype = qtype, level = "transcript", location = location, filename = filename)
+rsem.read.iso(dir, dirs2, tissue, N, qtype = qtype, level = "gene", location = location, filename = "cnts.merged.genes")
+```
