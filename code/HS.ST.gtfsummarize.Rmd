@@ -16,7 +16,7 @@ This program reads in the gtf dataframes built in "HS.ST.prepandmerge.Rmd", and 
 rm(list=ls())
 options(stringsAsFactors = FALSE)
 ## load datasets
-load(file = paste("/Volumes/smiharry/Saba_Lab/RNA-Seq/HS/Brain/", "quantitation/", "HS.gtfdataframes.RData", sep = ""))
+load(file = paste("/Volumes/smiharry/Saba_Lab/RNA-Seq/HS/Transcriptome_Reconstruction/Brain/", "quantitation/", "HS.gtfdataframes.RData", sep = ""))
 dflist <- list("Acbc" = Acbc_df, "IL" = IL_df, "LHB" = LHB_df, "PL" = PL_df, "VoLo" = VoLo_df, "Combined" = FULL_df)
 ss <- function(data) {
   ## number of transcripts
@@ -56,7 +56,7 @@ tpg <- function(x) {
 
 tpgsummary <- as.data.frame(do.call("rbind", lapply(dflist, FUN = function(x) tpg(x))))
 colnames(tpgsummary) <- c("Minimum", "1st Quartile", "Median", "Mean", "3rd Quartile", "Maximum")
-write.csv(tpgsummary, file = "/Volumes/smiharry/Saba_Lab/RNA-Seq/HS/Brain/tables/HS.transcrptpergeneSummary.csv", row.names = T, quote = F)
+write.csv(tpgsummary, file = "/Volumes/smiharry/Saba_Lab/RNA-Seq/HS/Transcriptome_Reconstruction/Brain/tables/HS.transcrptpergeneSummary.csv", row.names = T, quote = F)
 
 ## Generate summary table for combined dataset
 dfFinal <- data.frame("Dataset" = forPlot$Dataset,
@@ -66,7 +66,7 @@ dfFinal <- data.frame("Dataset" = forPlot$Dataset,
           "Number of novel transcripts with one exon" = paste(prettyNum(forPlot$`Number of novel transcripts with one exon`, big.mark = ","), " ", "(", as.character(round((forPlot$`Number of novel transcripts with one exon`/forPlot$`Number of novel transcripts`)*100), 1), "%", ")", sep = ""), 
           "Number of genes" = prettyNum(forPlot$`Number of genes`, big.mark = ","))
 colnames(dfFinal) <- c("Dataset", "Number of transcripts", "Number of novel transcripts", "Number of novel transcripts with multiple exons", "Number of novel transcripts with one exon", "Number of genes")
-write.csv(dfFinal, file = "/Volumes/smiharry/Saba_Lab/RNA-Seq/HS/tables/Brain/HS.transcriptContentSummary.csv", row.names = F, quote = T)
+write.csv(dfFinal, file = "/Volumes/smiharry/Saba_Lab/RNA-Seq/HS/Transcriptome_Reconstruction/Brain/tables/HS.transcriptContentSummary.csv", row.names = F, quote = T)
 
 ```
 
@@ -77,7 +77,7 @@ library(ggplot2)
 library(reshape2)
 library(RColorBrewer)
 fp.melt <- melt(forPlot, id.vars = "Dataset")
-png("/Volumes/smiharry/Saba_Lab/RNA-Seq/HS/Brain/graphics/HS.gtfTranscriptSummary.png", height = 6, width = 8, res = 480, units = "in")
+png("/Volumes/smiharry/Saba_Lab/RNA-Seq/HS/Transcriptome_Reconstruction/Brain/graphics/HS.gtfTranscriptSummary.png", height = 6, width = 8, res = 480, units = "in")
 ggplot(fp.melt, aes(Dataset, value)) +   
   geom_bar(aes(fill = variable), stat = 'identity', position = 'dodge') +
   labs(x = "Dataset (Brain region)", y = "Count") +
@@ -92,7 +92,7 @@ dev.off()
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 ## load gtf.tmap data
-load(file = paste("/Volumes/smiharry/Saba_Lab/RNA-Seq/HS/Brain/", "quantitation/", "HS.gtf.tmap.merge.RData", sep = ""))
+load(file = paste("/Volumes/smiharry/Saba_Lab/RNA-Seq/HS/Transcriptome_Reconstruction/Brain/", "quantitation/", "HS.gtf.tmap.merge.RData", sep = ""))
 dflist2 <- list("Acbc" = Acbc.tlev, "IL" = IL.tlev, "LHB" = LHB.tlev, "PL" = PL.tlev, "VoLo" = VoLo.tlev, "Combined" = FULL.tlev)
 ## extract novel transcripts, and summarize class codes
 ccs <- function(x){
@@ -138,10 +138,10 @@ cc.pretty <- data.frame("Dataset" = classcodeagg$Dataset,
                            "i" =  paste(prettyNum(classcodeagg$i, big.mark = ","), " ", "(", as.character(round((classcodeagg$i/forPlot$`Number of novel transcripts`)*100)), "%)", sep = ""), 
                            "other" =  paste(prettyNum(classcodeagg$other, big.mark = ","), " ", "(", as.character(round((classcodeagg$other/forPlot$`Number of novel transcripts`)*100)), "%)", sep = ""))
 colnames(cc.pretty) <- c("Dataset", "At least 1 exon junction match", "Intergenic", "Intronic", "Ambiguous overlap")
-write.csv(cc.pretty, file = "/Volumes/smiharry/Saba_Lab/RNA-Seq/HS/Brain/tables/HS.classcodeSummary.csv", row.names = F, quote = T)
+write.csv(cc.pretty, file = "/Volumes/smiharry/Saba_Lab/RNA-Seq/HS/Transcriptome_Reconstruction/Brain/tables/HS.classcodeSummary.csv", row.names = F, quote = T)
 
 ## Generate plot summarizing all class codes
-png("/Volumes/smiharry/Saba_Lab/RNA-Seq/HS/Brain/graphics/HS.gtfClassCodeSummary.png", height = 6, width = 8, res = 480, units = "in")
+png("/Volumes/smiharry/Saba_Lab/RNA-Seq/HS/Transcriptome_Reconstruction/Brain/graphics/HS.gtfClassCodeSummary.png", height = 6, width = 8, res = 480, units = "in")
 ggplot(cc.melt, aes(Dataset, value)) +   
   geom_bar(aes(fill = variable), stat = 'identity', position = 'dodge') +
   labs(x = "Dataset (Brain region)", y = "Count") +
@@ -153,7 +153,7 @@ ggplot(cc.melt, aes(Dataset, value)) +
 dev.off()
 
 ## Generate plot summarizing class codes with collapsed category
-png("/Volumes/smiharry/Saba_Lab/RNA-Seq/HS/Brain/graphics/HS.gtfClassCodeCollapsedSummary.png", height = 6, width = 8, res = 480, units = "in")
+png("/Volumes/smiharry/Saba_Lab/RNA-Seq/HS/Transcriptome_Reconstruction/Brain/graphics/HS.gtfClassCodeCollapsedSummary.png", height = 6, width = 8, res = 480, units = "in")
 ggplot(ca.melt, aes(Dataset, value)) +   
   geom_bar(aes(fill = variable), stat = 'identity', position = 'dodge') +
   labs(x = "Dataset (Brain region)", y = "Count") +
@@ -165,7 +165,7 @@ ggplot(ca.melt, aes(Dataset, value)) +
 dev.off()
 
 ## Generate plot summarizing class codes with collapsed category and as a percent
-png("/Volumes/smiharry/Saba_Lab/RNA-Seq/HS/Brain/graphics/HS.gtfClassCodePercentSummary.png", height = 6, width = 8, res = 480, units = "in")
+png("/Volumes/smiharry/Saba_Lab/RNA-Seq/HS/Transcriptome_Reconstruction/Brain/graphics/HS.gtfClassCodePercentSummary.png", height = 6, width = 8, res = 480, units = "in")
 ggplot(cp.melt, aes(Dataset, value)) +   
   geom_bar(aes(fill = variable), stat = 'identity', position = 'dodge') +
   labs(x = "Dataset (Brain region)", y = "Number of transcripts as a percent of \n total novel transcripts") +
@@ -180,7 +180,7 @@ dev.off()
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 ## load gtf.tmap data
-load(file = paste("/Volumes/smiharry/Saba_Lab/RNA-Seq/HS/Brain/", "quantitation/", "HS.brainregiongtfcomparison.RData", sep = ""))
+load(file = paste("/Volumes/smiharry/Saba_Lab/RNA-Seq/HS/Transcriptome_Reconstruction/Brain/", "quantitation/", "HS.brainregiongtfcomparison.RData", sep = ""))
 ILvPL_df <- ILvPL_df[!duplicated(ILvPL_df$transcript_id), ]
 ILvLHB_df <- ILvLHB_df[!duplicated(ILvLHB_df$transcript_id), ]
 dflist3 <- list("ILvPL" = ILvPL_df, "ILvLHB" = ILvLHB_df)
@@ -212,7 +212,7 @@ ccc.melt <- melt(classcodecompare, id.vars = "Dataset")
 cca.melt <- melt(classcodecompareagg, id.vars = "Dataset")
 
 ## Generate plot summarizing class codes with collapsed category
-png("/Volumes/smiharry/Saba_Lab/RNA-Seq/HS/Brain/graphics/HS.brainregiongtfcompare.png", height = 6, width = 8, res = 480, units = "in")
+png("/Volumes/smiharry/Saba_Lab/RNA-Seq/HS/Transcriptome_Reconstruction/Brain/graphics/HS.brainregiongtfcompare.png", height = 6, width = 8, res = 480, units = "in")
 ggplot(ccc.melt, aes(Dataset, value)) +   
   geom_bar(aes(fill = variable), stat = 'identity', position = 'dodge') +
   labs(x = "Dataset (Brain region)", y = "Count") +
@@ -225,7 +225,7 @@ dev.off()
 
 ## Generate plot summarizing class codes with collapsed category
 brewvec <- c("#80B1D3", "#8DD3C7", "#FFFFB3", "#BEBADA", "#FB8072")
-png("/Volumes/smiharry/Saba_Lab/RNA-Seq/HS/Brain/graphics/HS.brainregeiongtfcompareCollapsed.png", height = 6, width = 8, res = 480, units = "in")
+png("/Volumes/smiharry/Saba_Lab/RNA-Seq/HS/Transcriptome_Reconstruction/Brain/graphics/HS.brainregeiongtfcompareCollapsed.png", height = 6, width = 8, res = 480, units = "in")
 ggplot(cca.melt, aes(Dataset, value)) +   
   geom_bar(aes(fill = variable), stat = 'identity', position = 'dodge') +
   labs(x = "Dataset (Brain region)", y = "Count") +
