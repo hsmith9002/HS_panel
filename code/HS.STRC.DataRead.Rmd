@@ -10,7 +10,7 @@ This program reads in the gene level and transcript level counts from the RSEM c
 File input: /data/rn6/quantitation/HS_brainPolyA/batch#/reconst.Full/
 File ouput: ~/Saba_Lab/RNA-Seq/HS/quantitation/
 
-1. Read in expected count data from all 10 Liver batches, append the batch number to each strain name based on the batch it came from, and merge based on transcript ID. 
+1. Read in expected count data from all 3 batches, append the batch number to each strain name based on the batch it came from, and merge based on transcript ID.  
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 ## Read in RSEM data by batch number
