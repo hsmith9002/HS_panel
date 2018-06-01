@@ -30,3 +30,37 @@ filename <- "cnts.merged"
 rsem.read.iso(dir, dirs2, tissue, N, qtype = qtype, level = "transcript", location = location, filename = filename)
 rsem.read.iso(dir, dirs2, tissue, N, qtype = qtype, level = "gene", location = location, filename = "cnts.merged.genes")
 ```
+
+2. Load the isoform level dataset, and reformat column names. Right now, all the samples from the batch_3_4_5 folder have "batch_3_4_5" attached to their names. All of these samples had very low reads when sequenced the first time, so they were all sequenced 2 more times. For the purposes of batch labeling we can consider batchs 3, 4, and 5 all one batch, and we will call this batch 3. All the samples with the "batch_3_4_5" attched to them will need to have their names changed to have a "batch3" label. 
+Also, I will remove low quality samples. The definition for this first filtration step is, "a low quality sample will be identified and removed if it has a raw read count less than 5 million reads."
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+## load isoform level data
+options(stringsAsFactors = F)
+load("/Volumes/smiharry/Saba_Lab/RNA-Seq/HS/Transcript_Reconstruction/Brain/quantitation/cnts.merged.RData")
+
+## change names that have batch_3_4_5 to batch3
+colnames(cntsMerged) <- gsub("batch_3_4_5", "batch3", colnames(cntsMerged), fixed = TRUE)
+colnames(cntsMerged)[-1] <- sub('_', '.', colnames(cntsMerged)[-1])
+
+## Examine read totals for each sample
+rrt <- apply(cntsMerged[-1], 2, FUN = function(x) sum(x))
+## plot histogram
+hist(rrt)
+## plot scatterplot
+plot(rrt)
+
+## remove low quality samples (i.e. raw read count less than 5 million)
+'%!in%' <- function(x,y)!('%in%'(x,y))
+cntsMerged <- cntsMerged[, which(colnames(cntsMerged) %!in% names(rrt[rrt < 5000000]))]
+```
+
+3. Generate PA.table. First I will generate the present/absent table, and use this to make dendrograms to help identify any outliers. If outliers are discovered, they will be removed from the dataset, and a new PA table will be generated with annotations added that specify whether a transcript is KTKG, NTKG, or NTNG. This will be the data set used in downstream analysis. NOTE: There is no need to use the pres.abs.table() function with this dataset because there are no biological replicates. There are just the 436 unique samples. Transcript presence will be determined by if the transcript has a read count of greater than or equal to 10 reads. This PA.table will therefore be a matrix of 0s and 1s, where 0 is abscent in a given sample and 1 is present in a given sample.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+PA.table <- cntsMerged[, -1] >= 10
+PA.table <- apply(PA.table, 2,FUN = function(x) as.integer(x))
+PA.table <- as.data.frame(cbind(cntsMerged$transcript_id, PA.table))
+colnames(PA.table)[1] <- "transcript_id"
+save(PA.table, file = "/Volumes/smiharry/Saba_Lab/RNA-Seq/HS/Transcript_Reconstruction/Brain/quantitation/PA.table.RData")
+```

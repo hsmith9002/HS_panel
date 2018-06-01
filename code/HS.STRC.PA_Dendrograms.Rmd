@@ -1,0 +1,70 @@
+---
+title: "HS.STRC.PA_Dendrograms"
+author: "Harry Smith"
+date: "6/1/2018"
+output: html_document
+---
+
+
+This program takes as input the PA tables created in "HS.STRC.DataRead.Rmd" and uses them to examine clustering at the sample and strain level. For each dataset a dendrogram is generated for the sample level. The dendrograms from the first dataset are used to idenify outlier samples.  These are then removed in "HS.STRC.DataRead.Rmd" and these data are used for the second set of dendrograms (if necessary). 
+
+File input: /Volumes/smiharry/Saba_Lab/RNA-Seq/HS/Transcript_Reconstruction/Brain/quantitation/PA.table.RData
+File ouput: /Volumes/smiharry/Saba_Lab/RNA-Seq/HS/Transcript_Reconstruction/Brain/Graphics/
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+## Set up workspace
+rm(list = ls())
+options(stringsAsFactors = FALSE)
+library(stcr)
+library(WGCNA)
+library(RColorBrewer)
+## Create global directory objects 
+dir <- "/Volumes/smiharry/Saba_Lab/RNA-Seq/HS/"
+dirlocal <- "~/Desktop/Saba_Lab/"
+tissue <- "Brain"
+```
+
+1a. Examine clustering based on present/absent criteria (Using PA.table) - Before removing outliers
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+
+load(file = paste(dir, "Transcript_Reconstruction/", tissue, "/quantitation/",  "PA.table", ".Rdata", sep = ""))
+
+PA.forDendro <- PA.table[, -c(1)]
+rownames(PA.forDendro) <- PA.table$transcript_id
+
+# create hierarchical clustering
+content.hclust = hclust(as.dist(1-cor(PA.forDendro, method="pearson")))
+
+colors = c(brewer.pal(9, "Set1"), brewer.pal(8, "Set2"))
+
+batch.tmp <-  unlist(lapply(strsplit(content.hclust$labels,split="_",fixed=TRUE),function(a) a[length(a)]))
+batch.num <- unlist(lapply(strsplit(batch.tmp,split="batch",fixed=TRUE),function(a) a[length(a)]))
+
+colors4plot2=c()
+for(i in 1:length(batch.num)){
+  if(batch.num[i]=="1"){colors4plot2[i]=colors[1]}
+  if(batch.num[i]=="2"){colors4plot2[i]=colors[2]}
+  if(batch.num[i]=="3"){colors4plot2[i]=colors[3]}
+  }
+colors4plot2=as.matrix(colors4plot2)
+colnames(colors4plot2) = "Batch"
+
+labsforbrainregion <- content.hclust$labels
+
+colors4brainregion=c()
+for(i in 1:length(labsforbrainregion)){
+  if(grepl("AcBc", labsforbrainregion[i], fixed = T)){colors4brainregion[i]=colors[4]}
+  if(grepl("IL", labsforbrainregion[i], fixed = T)){colors4brainregion[i]=colors[5]}
+  if(grepl("LHB", labsforbrainregion[i], fixed = T)){colors4brainregion[i]=colors[6]}
+  if(grepl("PL", labsforbrainregion[i], fixed = T)){colors4brainregion[i]=colors[7]}
+  if(grepl("VoLo", labsforbrainregion[i], fixed = T)){colors4brainregion[i]=colors[8]}
+  }
+colors4brainregion=as.matrix(colors4brainregion)
+colnames(colors4brainregion) = "Brain Region"
+
+#plot the dendrogram with a color bar underneath that in this example case corresponds to batch 
+pdf("/Volumes/smiharry/Saba_Lab/RNA-Seq/HS/Transcript_Reconstruction/Brain/graphics/TC_SampleLevel_Dendrogram_BeforeFiltering.pdf", height = 10, width = 25)
+plotDendroAndColors(dendro=content.hclust, colors=as.matrix(cbind(colors4plot2, colors4brainregion)), main="HS Brain Transcript Content: Present/Absent \n Sample Level", ylab="1-Pearson Correlation",cex.dendroLabels = 0.45)
+dev.off()
+```
